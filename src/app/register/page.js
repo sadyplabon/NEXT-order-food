@@ -8,16 +8,21 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [creatingUser, setCreatingUser] = useState(false);
   const [userCreated, setUserCreated] = useState(false);
+  const [error, setError] = useState(false);
   async function handleFormSubmit(e) {
     e.preventDefault();
     setCreatingUser(true);
-    await fetch("/api/register", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: { "Content-Type": "application/json" },
-    });
-    setCreatingUser(false);
-    setUserCreated(true);
+    try {
+      await fetch("/api/register", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+        headers: { "Content-Type": "application/json" },
+      });
+      setCreatingUser(false);
+      setUserCreated(true);
+    } catch (error) {
+      setError(true);
+    }
   }
   return (
     <section className="mt-8">
@@ -29,6 +34,12 @@ export default function RegisterPage() {
           <Link className="underline" href={"/login"}>
             Login &raquo;
           </Link>
+        </div>
+      )}
+      {error && (
+        <div className="my-4 text-center text-red-600">
+          Error !
+          <br /> Please try again later.
         </div>
       )}
       <form className="block max-w-xs mx-auto" onSubmit={handleFormSubmit}>
@@ -56,6 +67,12 @@ export default function RegisterPage() {
           <Image src={"/google.png"} width={20} height={20} alt="google" />
           Login with Google
         </button>
+        <div className="text-center my-4 text-gray-500 border-t pt-4">
+          Existing account?{" "}
+          <Link className="underline" href={"/login"}>
+            Login here &raquo;
+          </Link>
+        </div>
       </form>
     </section>
   );
